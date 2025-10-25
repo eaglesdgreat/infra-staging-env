@@ -16,38 +16,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-
-      - name: Set up AWS CLI
+      - name: Install aws-iam-authenticator
         run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --update
-
-      # - name: Install aws-iam-authenticator
-      #   run: |
-      #     echo "Installing aws-iam-authenticator..."
-      #     mkdir -p ~/aws
-      #     AUTHENTICATOR_URL=$(curl -s https://api.github.com/repos/kubernetes-sigs/aws-iam-authenticator/releases/latest | grep "browser_download_url.*linux_amd64" | cut -d '"' -f 4)
-      #     echo "Downloading from: $AUTHENTICATOR_URL"
-      #     curl -L -o ~/aws/aws-iam-authenticator "$AUTHENTICATOR_URL"
-      #     chmod +x ~/aws/aws-iam-authenticator
-      #     sudo mv ~/aws/aws-iam-authenticator /usr/local/bin/
-      #     echo "Installation completed successfully"
+          echo "Installing aws-iam-authenticator..."
+          mkdir -p ~/aws
+          AUTHENTICATOR_URL=$(curl -s https://api.github.com/repos/kubernetes-sigs/aws-iam-authenticator/releases/latest | grep "browser_download_url.*linux_amd64" | cut -d '"' -f 4)
+          echo "Downloading from: $AUTHENTICATOR_URL"
+          curl -L -o ~/aws/aws-iam-authenticator "$AUTHENTICATOR_URL"
+          chmod +x ~/aws/aws-iam-authenticator
+          sudo mv ~/aws/aws-iam-authenticator /usr/local/bin/
+          echo "Installation completed successfully"
 
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.13.3
-
-      - name: Update Kubernetes provider configuration
-        run: |
-          # Update kubeconfig
-          aws eks update-kubeconfig --region us-west-2 --name ms-cluster
 
       - name: Terraform fmt
         run: terraform fmt
@@ -74,8 +56,8 @@ jobs:
       - name: Verify Kubernetes access
         run: kubectl get nodes
 
-      # - name: Upload kubeconfig file
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: kubeconfig
-      #     path: kubeconfig
+      - name: Upload kubeconfig file
+        uses: actions/upload-artifact@v4
+        with:
+          name: kubeconfig
+          path: kubeconfig
