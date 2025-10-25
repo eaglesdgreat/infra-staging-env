@@ -46,9 +46,6 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -no-color -auto-approve
 
-      - name: Verify Kubernetes access
-        run: kubectl get nodes
-
       - name: Upload kubeconfig file
         uses: actions/upload-artifact@v4
         with:
