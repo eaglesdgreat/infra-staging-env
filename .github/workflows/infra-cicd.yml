@@ -43,13 +43,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -no-color
 
-      - name: Verify EKS Cluster Readiness
-        run: |
-          echo "Checking EKS cluster status..."
-          aws eks describe-cluster --name ms-cluster --region us-west-2 --query "cluster.status"
-          echo "Checking node group status..."
-          aws eks describe-nodegroup --cluster-name ms-cluster --nodegroup-name $(aws eks list-nodegroups --cluster-name ms-cluster --region us-west-2 --query "nodegroups[0]" --output text) --region us-west-2 --query "nodegroup.status"
-
       - name: Terraform Apply
         run: terraform apply -no-color -auto-approve
 
