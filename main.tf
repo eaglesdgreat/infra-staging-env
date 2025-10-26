@@ -111,5 +111,5 @@ module "traefik" {
   kubernetes_cluster_cert_data = module.aws-kubernetes-cluster.eks_cluster_certificate_authority_data
   kubernetes_cluster_endpoint  = module.aws-kubernetes-cluster.eks_cluster_endpoint
 
-  eks_nodegroup_id = module.aws-kubernetes-cluster.eks_cluster_node_group_id
+  eks_node_group_id = module.aws-kubernetes-cluster.eks_cluster_node_group_id
 }
